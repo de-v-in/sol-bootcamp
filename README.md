@@ -24,3 +24,6 @@
 - https://book.anchor-lang.com/ - Anchor Rust
 - https://github.com/ilmoi/awesome-solana-nfts - Awesome Solanas
 - https://drive.google.com/drive/folders/1FnB_hy5kg5X2SDMw7PtXgYPv6Ncwk4X9?usp=sharing - Sentre Academy
+
+## UML
+<img src="./assets/UML.png" style="border-radius: 5px"/>
