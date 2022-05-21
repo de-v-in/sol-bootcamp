@@ -7,6 +7,7 @@
 - Install NodeJs: https://nodejs.org/en/
 - Install `npm, yarn, pnpm`
 - Start project: `anchor init de-sol`
+
 ## Project structure of Anchor
    The `.anchor` folder: It includes the most recent **program logs** and a **local ledger** that is used for testing
 -   The `app` folder: An empty folder that you can use to hold **your frontend** if you use a monorepo
@@ -18,6 +19,12 @@
     -   A **registry your program** can be pushed to (`[registry]`)
     -   A **provider** which can be used in your tests (`[provider]`)
     -   **Executed scripts** of Anchor (`[scripts]`). The `test` script is run when running `anchor test`. Run your own scripts with `anchor run <script_name>`.
+
+## Development tools
+Solana dashboard: https://solanabeach.io/ - to track Solana chain infrastructure
+Solana explorer: https://explorer.solana.com/?cluster=testnet - to track your address's state (balance, transaction...)
+Solana faucet: https://solfaucet.com/ - to provide SOL token for your address
+ERC20 faucet: https://faucetpay.io/page/faucet-list/10/1/0
 
 ## Refs
 - https://solanacookbook.com/ - Solana concept & how to
