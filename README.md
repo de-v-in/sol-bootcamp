@@ -21,10 +21,10 @@
     -   **Executed scripts** of Anchor (`[scripts]`). The `test` script is run when running `anchor test`. Run your own scripts with `anchor run <script_name>`.
 
 ## Development tools
-Solana dashboard: https://solanabeach.io/ - to track Solana chain infrastructure
-Solana explorer: https://explorer.solana.com/?cluster=testnet - to track your address's state (balance, transaction...)
-Solana faucet: https://solfaucet.com/ - to provide SOL token for your address
-ERC20 faucet: https://faucetpay.io/page/faucet-list/10/1/0
+- Solana dashboard: https://solanabeach.io/ - to track Solana chain infrastructure
+- Solana explorer: https://explorer.solana.com/?cluster=testnet - to track your address's state (balance, transaction...)
+- Solana faucet: https://solfaucet.com/ - to provide SOL token for your address
+- ERC20 faucet: https://faucetpay.io/page/faucet-list/10/1/0
 
 ## Refs
 - https://solanacookbook.com/ - Solana concept & how to
