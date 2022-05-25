@@ -1,3 +1,4 @@
+import { cLog } from '@pages/_app';
 import { web3 } from '@project-serum/anchor';
 import { TOKEN_PROGRAM_ID } from '@project-serum/anchor/dist/cjs/utils/token';
 
@@ -17,25 +18,32 @@ export const useSolancerContract = () => {
    */
   const signup = async (name: string, profile: string, role: string, cv_url: string) => {
     if (wallet && userPda) {
-      if (role === 'developer') {
-        await program?.methods
-          .createDeveloper(name, profile, role, cv_url)
-          .accounts({
-            developer: userPda,
-            authority: wallet.publicKey,
-            ...DefaultAccount,
-          })
-          .rpc();
-      } else if (role === 'company') {
-        console.log('role', role);
-        await program?.methods
-          .createCompany(name, profile, role)
-          .accounts({
-            company: userPda,
-            authority: wallet.publicKey,
-            ...DefaultAccount,
-          })
-          .rpc();
+      let tx: undefined | string = '';
+      try {
+        if (role === 'developer') {
+          tx = await program?.methods
+            .createDeveloper(name, profile, role, cv_url)
+            .accounts({
+              developer: userPda,
+              authority: wallet.publicKey,
+              ...DefaultAccount,
+            })
+            .rpc();
+        } else if (role === 'company') {
+          tx = await program?.methods
+            .createCompany(name, profile, role)
+            .accounts({
+              company: userPda,
+              authority: wallet.publicKey,
+              ...DefaultAccount,
+            })
+            .rpc();
+        }
+        cLog.i('signup', 'Create user success', { tx, role });
+        return true;
+      } catch (e) {
+        cLog.w('signup', 'Create user failed', { e, role });
+        return false;
       }
     }
   };
