@@ -1,7 +1,7 @@
 [features]
 seeds = false
 [programs.localnet]
-solancer = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+solancer = "FWPedSThzPVNU7QUjgVnJSDJFpd6P64KExFKxXUT5DtC"
 
 [registry]
 url = "https://anchor.projectserum.com"
