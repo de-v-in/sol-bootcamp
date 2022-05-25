@@ -1,8 +1,6 @@
-# SOLANA TODOCHAIN DAPP
+# SOLANCER DAPP
 
-> Learning about the Anchor and Solana with TODOCHAIN
-
-<b>TODOCHAIN</b> is an application for learning about `solana` blockchain. It built with `Anchor` framework and using `NextJS` as frontend.
+> Better world for freelancer
 
 # Folder Structure
 
