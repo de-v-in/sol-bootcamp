@@ -93,6 +93,94 @@
           "type": "string"
         }
       ]
+    },
+    {
+      "name": "createJd",
+      "accounts": [
+        {
+          "name": "jd",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "clock",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "jdContentUrl",
+          "type": "string"
+        },
+        {
+          "name": "maxSlot",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "createSubmission",
+      "accounts": [
+        {
+          "name": "submission",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "clock",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "company",
+          "type": "publicKey"
+        },
+        {
+          "name": "jdTitle",
+          "type": "string"
+        },
+        {
+          "name": "developerMsg",
+          "type": "string"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -155,6 +243,64 @@
           }
         ]
       }
+    },
+    {
+      "name": "JDAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "company",
+            "type": "publicKey"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "jdContentUrl",
+            "type": "string"
+          },
+          {
+            "name": "maxSlot",
+            "type": "u64"
+          },
+          {
+            "name": "submitIdList",
+            "type": {
+              "vec": "u64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SubmissionAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "developer",
+            "type": "publicKey"
+          },
+          {
+            "name": "company",
+            "type": "publicKey"
+          },
+          {
+            "name": "jdTitle",
+            "type": "string"
+          },
+          {
+            "name": "developerMsg",
+            "type": "string"
+          },
+          {
+            "name": "isApprove",
+            "type": "bool"
+          }
+        ]
+      }
     }
   ],
   "errors": [
@@ -162,9 +308,21 @@
       "code": 6000,
       "name": "CannotCreateUser",
       "msg": "User cannot be created, missing data"
+    },
+    {
+      "code": 6001,
+      "name": "CannotCreateJD",
+      "msg": "JD cannot be created, missing data"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidJDMaxSlot",
+      "msg": "JD cannot be created, max slot is 0 or greater than 100"
+    },
+    {
+      "code": 6003,
+      "name": "CannotCreateSubmission",
+      "msg": "Submission cannot be created, missing data"
     }
-  ],
-  "metadata": {
-    "address": "FWPedSThzPVNU7QUjgVnJSDJFpd6P64KExFKxXUT5DtC"
-  }
+  ]
 }

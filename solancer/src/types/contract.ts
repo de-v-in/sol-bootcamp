@@ -93,6 +93,50 @@ export type Solancer = {
           type: 'string';
         }
       ];
+    },
+    {
+      name: 'createJd';
+      accounts: [
+        {
+          name: 'jd';
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: 'authority';
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: 'systemProgram';
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: 'tokenProgram';
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: 'clock';
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: 'title';
+          type: 'string';
+        },
+        {
+          name: 'jdContentUrl';
+          type: 'string';
+        },
+        {
+          name: 'maxSlot';
+          type: 'u64';
+        }
+      ];
     }
   ];
   accounts: [
@@ -155,6 +199,66 @@ export type Solancer = {
           }
         ];
       };
+    },
+    {
+      name: 'jdAccount';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'company';
+            type: 'publicKey';
+          },
+          {
+            name: 'title';
+            type: 'string';
+          },
+          {
+            name: 'jdContentUrl';
+            type: 'string';
+          },
+          {
+            name: 'maxSlot';
+            type: 'u64';
+          },
+          {
+            name: 'acceptedList';
+            type: {
+              vec: 'publicKey';
+            };
+          },
+          {
+            name: 'pendingList';
+            type: {
+              vec: {
+                defined: 'PendingSubmission';
+              };
+            };
+          },
+          {
+            name: 'isAvailable';
+            type: 'bool';
+          }
+        ];
+      };
+    }
+  ];
+  types: [
+    {
+      name: 'PendingSubmission';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'msg';
+            type: 'string';
+          },
+          {
+            name: 'developer';
+            type: 'publicKey';
+          }
+        ];
+      };
     }
   ];
   errors: [
@@ -162,6 +266,21 @@ export type Solancer = {
       code: 6000;
       name: 'CannotCreateUser';
       msg: 'User cannot be created, missing data';
+    },
+    {
+      code: 6001;
+      name: 'CannotCreateJD';
+      msg: 'JD cannot be created, missing data';
+    },
+    {
+      code: 6002;
+      name: 'InvalidJDMaxSlot';
+      msg: 'JD cannot be created, max slot is 0 or greater than 50';
+    },
+    {
+      code: 6003;
+      name: 'CannotCreateSubmission';
+      msg: 'Submission cannot be created, missing data';
     }
   ];
 };
@@ -262,6 +381,50 @@ export const IDL: Solancer = {
         },
       ],
     },
+    {
+      name: 'createJd',
+      accounts: [
+        {
+          name: 'jd',
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: 'authority',
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: 'systemProgram',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'tokenProgram',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'clock',
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: 'title',
+          type: 'string',
+        },
+        {
+          name: 'jdContentUrl',
+          type: 'string',
+        },
+        {
+          name: 'maxSlot',
+          type: 'u64',
+        },
+      ],
+    },
   ],
   accounts: [
     {
@@ -324,12 +487,87 @@ export const IDL: Solancer = {
         ],
       },
     },
+    {
+      name: 'jdAccount',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'company',
+            type: 'publicKey',
+          },
+          {
+            name: 'title',
+            type: 'string',
+          },
+          {
+            name: 'jdContentUrl',
+            type: 'string',
+          },
+          {
+            name: 'maxSlot',
+            type: 'u64',
+          },
+          {
+            name: 'acceptedList',
+            type: {
+              vec: 'publicKey',
+            },
+          },
+          {
+            name: 'pendingList',
+            type: {
+              vec: {
+                defined: 'PendingSubmission',
+              },
+            },
+          },
+          {
+            name: 'isAvailable',
+            type: 'bool',
+          },
+        ],
+      },
+    },
+  ],
+  types: [
+    {
+      name: 'PendingSubmission',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'msg',
+            type: 'string',
+          },
+          {
+            name: 'developer',
+            type: 'publicKey',
+          },
+        ],
+      },
+    },
   ],
   errors: [
     {
       code: 6000,
       name: 'CannotCreateUser',
       msg: 'User cannot be created, missing data',
+    },
+    {
+      code: 6001,
+      name: 'CannotCreateJD',
+      msg: 'JD cannot be created, missing data',
+    },
+    {
+      code: 6002,
+      name: 'InvalidJDMaxSlot',
+      msg: 'JD cannot be created, max slot is 0 or greater than 50',
+    },
+    {
+      code: 6003,
+      name: 'CannotCreateSubmission',
+      msg: 'Submission cannot be created, missing data',
     },
   ],
 };

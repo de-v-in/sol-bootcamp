@@ -78,38 +78,45 @@ pub mod solancer {
         jd_content_url: String,
         max_slot: u64,
     ) -> anchor_lang::Result<()> {
-        if title.trim().is_empty() || jd_content_url.trim().is_empty() || max_slot == 0 {
+        if title.trim().is_empty() || jd_content_url.trim().is_empty() {
             return Err(error!(Errors::CannotCreateJD));
         }
+
+        if max_slot == 0 && max_slot > 50 {
+            return Err(error!(Errors::InvalidJDMaxSlot));
+        }
+
         let jd = &mut ctx.accounts.jd;
         jd.company = ctx.accounts.authority.key();
         jd.title = title;
         jd.jd_content_url = jd_content_url;
         jd.max_slot = max_slot;
+        jd.is_available = true;
 
         msg!("JD Added!"); //logging
         sol_log_compute_units(); //Logs how many compute units are left, important for budget
         Ok(())
     }
 
-    pub fn create_submission(
-        ctx: Context<CreateSubmission>,
-        company: Pubkey,
-        jd_title: String,
-        developer_msg: String,
+    pub fn add_submission(
+        ctx: Context<AddSubmission>,
+        developer: Pubkey,
+        msg: String,
     ) -> anchor_lang::Result<()> {
-        if company.to_string().is_empty() || jd_title.trim().is_empty() {
-            return Err(error!(Errors::CannotCreateSubmission));
+        if developer.to_string().is_empty() {
+            return Err(error!(Errors::CannotAddSubmission));
         }
-        let submission = &mut ctx.accounts.submission;
-        submission.developer = ctx.accounts.authority.key();
-        submission.company = company;
-        submission.jd_title = jd_title;
-        submission.developer_msg = developer_msg;
-        submission.is_approve = false;
+        let jd = &mut ctx.accounts.jd;
+        let mut pending_list = jd.pending_list.iter();
+        if pending_list.len() >= jd.max_slot as usize {
+            return Err(error!(Errors::NoSlotLeft));
+        }
+        if pending_list.any(|x| x.clone().developer == developer) {
+            return Err(error!(Errors::AlreadySubmitted));
+        }
 
-        msg!("Submission Added!"); //logging
-        sol_log_compute_units(); //Logs how many compute units are left, important for budget
+        let pending = PendingSubmission { developer, msg };
+        jd.pending_list.push(pending);
         Ok(())
     }
 }
@@ -120,6 +127,12 @@ pub enum Errors {
     CannotCreateUser,
     #[msg("JD cannot be created, missing data")]
     CannotCreateJD,
-    #[msg("Submission cannot be created, missing data")]
-    CannotCreateSubmission,
+    #[msg("JD cannot be created, max slot is 0 or greater than 50")]
+    InvalidJDMaxSlot,
+    #[msg("Submission cannot be added, missing data")]
+    CannotAddSubmission,
+    #[msg("JD has no slot left")]
+    NoSlotLeft,
+    #[msg("Submission already exists")]
+    AlreadySubmitted
 }

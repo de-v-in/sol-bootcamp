@@ -1,9 +1,10 @@
 use anchor_lang::prelude::*;
+use std::mem::size_of;
 
 const NAME_LENGTH: usize = 100;
 const URL_LENGTH: usize = 255;
 const USER_ROLE_LENGTH: usize = 15;
-const DEVELOPER_MSG_LENGTH: usize = 255;
+const MAX_CV_SLOT: usize = 20;
 #[account]
 pub struct DeveloperAccount {
     pub wallet_address: Pubkey,
@@ -37,22 +38,18 @@ pub struct JDAccount {
     pub title: String,
     pub jd_content_url: String,
     pub max_slot: u64,
-    pub submit_id_list: Vec<u64>,
+    pub accepted_list: Vec<Pubkey>,
+    pub pending_list: Vec<PendingSubmission>,
+    pub is_available: bool,
 }
 
 impl JDAccount {
-    pub const MAX_SIZE: usize = 32 + NAME_LENGTH + URL_LENGTH + 8 + (4 + 100 * 8);
+    pub const MAX_SIZE: usize =
+        32 + NAME_LENGTH + URL_LENGTH + 8 + MAX_CV_SLOT * (32 + size_of::<PendingSubmission>()) + 1;
 }
 
-#[account]
-pub struct SubmissionAccount {
-    pub developer: Pubkey,
-    pub company: Pubkey,
-    pub jd_title: String,
-    pub developer_msg: String,
-    pub is_approve: bool,
-}
-
-impl SubmissionAccount {
-    pub const MAX_SIZE: usize = 2 * 32 + NAME_LENGTH + DEVELOPER_MSG_LENGTH + 1;
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
+pub struct PendingSubmission {
+   pub msg: String,
+   pub developer: Pubkey,
 }
