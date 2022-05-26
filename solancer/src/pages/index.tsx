@@ -1,28 +1,23 @@
 import { Signup } from '@components/SignUp';
-import { useSolancerContract } from '@hooks/useSolancerContract';
 import { useWorkspace } from '@hooks/useWorkspace';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useEffect, useState } from 'react';
 
 const DefaultPage: IPageComponent = () => {
   const [isAccount, setAccount] = useState(false);
-
   const wallet = useWallet();
-
-  const { program, userPda } = useWorkspace();
-  const { signup } = useSolancerContract();
+  const { program, pdaMap } = useWorkspace();
 
   useEffect(() => {
     if (wallet.connected) {
       checkAccount();
     }
-  }, [wallet.connected]);
+  }, [wallet.connected, pdaMap, program]);
 
   const checkAccount = async () => {
-    if (!userPda || !program) return;
-
+    if (!pdaMap || !program) return;
     program.account.developerAccount
-      .fetch(userPda)
+      .fetch(pdaMap['developer'])
       .then((account) => {
         console.log('developer', account);
         setAccount(true);
@@ -30,7 +25,7 @@ const DefaultPage: IPageComponent = () => {
       .catch(async (err) => {
         console.log('Check account developer', err);
         try {
-          const company = await program.account.companyAccount.fetch(userPda);
+          const company = await program.account.companyAccount.fetch(pdaMap['company']);
           console.log('company', company);
           setAccount(true);
         } catch (error) {

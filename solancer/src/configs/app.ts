@@ -38,3 +38,5 @@ export const SOLANCER_PROGRAM_ID = new PublicKey(
 );
 
 export { AppConfig };
+
+export const SEEDS = ['developer', 'company'];

@@ -23,7 +23,7 @@ const WalletLayout: IComponent = ({ children }) => {
 
   return (
     <div className="h-screen bg-white text-zinc-700 font-thin text-green flex justify-center items-center flex-col">
-      <span className="text-6xl">TODOCHAIN</span>
+      <span className="text-6xl">SOLANCER</span>
       <span className="mb-8">
         Connect your <span className="font-bold">Wallet</span>
       </span>

@@ -11,20 +11,20 @@ const DefaultAccount = {
 };
 
 export const useSolancerContract = () => {
-  const { program, wallet, userPda } = useWorkspace();
+  const { program, wallet, pdaMap } = useWorkspace();
 
   /**
    * Signup new account
    */
   const signup = async (name: string, profile: string, role: string, cv_url: string) => {
-    if (wallet && userPda) {
+    if (wallet && pdaMap) {
       let tx: undefined | string = '';
       try {
         if (role === 'developer') {
           tx = await program?.methods
             .createDeveloper(name, profile, role, cv_url)
             .accounts({
-              developer: userPda,
+              developer: pdaMap[role],
               authority: wallet.publicKey,
               ...DefaultAccount,
             })
@@ -33,7 +33,7 @@ export const useSolancerContract = () => {
           tx = await program?.methods
             .createCompany(name, profile, role)
             .accounts({
-              company: userPda,
+              company: pdaMap[role],
               authority: wallet.publicKey,
               ...DefaultAccount,
             })
