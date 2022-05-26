@@ -57,3 +57,57 @@ pub struct CreateCompany<'info> {
     // Clock to save time
     pub clock: Sysvar<'info, Clock>,
 }
+
+#[derive(Accounts)]
+pub struct CreateJD<'info> {
+    // Authenticate user account
+    #[account(
+        init,
+        seeds = [b"jd".as_ref(), authority.key().as_ref()],
+        bump,
+        payer = authority,
+        space = JDAccount::MAX_SIZE + 8
+    )]
+    pub jd: Account<'info, JDAccount>,
+    // Authority (this is signer who paid transaction fee)
+    #[account(mut)]
+    pub authority: Signer<'info>,
+
+    /// System program
+    /// CHECK: Simple test account
+    pub system_program: UncheckedAccount<'info>,
+
+    // Token program
+    #[account(constraint = token_program.key == &token::ID)]
+    pub token_program: Program<'info, Token>,
+
+    // Clock to save time
+    pub clock: Sysvar<'info, Clock>,
+}
+
+#[derive(Accounts)]
+pub struct CreateSubmission<'info> {
+    // Authenticate user account
+    #[account(
+        init,
+        seeds = [b"jd".as_ref(), authority.key().as_ref()],
+        bump,
+        payer = authority,
+        space = SubmissionAccount::MAX_SIZE + 8
+    )]
+    pub submission: Account<'info, SubmissionAccount>,
+    // Authority (this is signer who paid transaction fee)
+    #[account(mut)]
+    pub authority: Signer<'info>,
+
+    /// System program
+    /// CHECK: Simple test account
+    pub system_program: UncheckedAccount<'info>,
+
+    // Token program
+    #[account(constraint = token_program.key == &token::ID)]
+    pub token_program: Program<'info, Token>,
+
+    // Clock to save time
+    pub clock: Sysvar<'info, Clock>,
+}

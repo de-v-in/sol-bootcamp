@@ -71,10 +71,55 @@ pub mod solancer {
         sol_log_compute_units(); //Logs how many compute units are left, important for budget
         Ok(())
     }
+
+    pub fn create_jd(
+        ctx: Context<CreateJD>,
+        title: String,
+        jd_content_url: String,
+        max_slot: u64,
+    ) -> anchor_lang::Result<()> {
+        if title.trim().is_empty() || jd_content_url.trim().is_empty() || max_slot == 0 {
+            return Err(error!(Errors::CannotCreateJD));
+        }
+        let jd = &mut ctx.accounts.jd;
+        jd.company = ctx.accounts.authority.key();
+        jd.title = title;
+        jd.jd_content_url = jd_content_url;
+        jd.max_slot = max_slot;
+
+        msg!("JD Added!"); //logging
+        sol_log_compute_units(); //Logs how many compute units are left, important for budget
+        Ok(())
+    }
+
+    pub fn create_submission(
+        ctx: Context<CreateSubmission>,
+        company: Pubkey,
+        jd_title: String,
+        developer_msg: String,
+    ) -> anchor_lang::Result<()> {
+        if company.to_string().is_empty() || jd_title.trim().is_empty() {
+            return Err(error!(Errors::CannotCreateSubmission));
+        }
+        let submission = &mut ctx.accounts.submission;
+        submission.developer = ctx.accounts.authority.key();
+        submission.company = company;
+        submission.jd_title = jd_title;
+        submission.developer_msg = developer_msg;
+        submission.is_approve = false;
+
+        msg!("Submission Added!"); //logging
+        sol_log_compute_units(); //Logs how many compute units are left, important for budget
+        Ok(())
+    }
 }
 
 #[error_code]
 pub enum Errors {
     #[msg("User cannot be created, missing data")]
     CannotCreateUser,
+    #[msg("JD cannot be created, missing data")]
+    CannotCreateJD,
+    #[msg("Submission cannot be created, missing data")]
+    CannotCreateSubmission,
 }
