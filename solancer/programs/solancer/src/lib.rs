@@ -98,7 +98,11 @@ pub mod solancer {
         Ok(())
     }
 
-    pub fn add_submission(ctx: Context<UpdateSubmission>,developer: Pubkey, msg: String) -> anchor_lang::Result<()> {
+    pub fn add_submission(
+        ctx: Context<UpdateSubmission>,
+        developer: Pubkey,
+        msg: String,
+    ) -> anchor_lang::Result<()> {
         if developer.to_string().is_empty() {
             return Err(error!(Errors::CannotAddSubmission));
         }
@@ -148,6 +152,52 @@ pub mod solancer {
         jd.pending_list = pending_list;
         Ok(())
     }
+
+    pub fn create_interview(
+        ctx: Context<CreateInterview>,
+        jd_title: String,
+        test_url: String,
+    ) -> anchor_lang::Result<()> {
+        if jd_title.trim().is_empty() || test_url.trim().is_empty() {
+            return Err(error!(Errors::CannotCreateInterview));
+        }
+        let interview = &mut ctx.accounts.interview;
+        interview.jd_title = jd_title;
+        interview.test_url = test_url;
+        Ok(())
+    }
+
+    pub fn add_interview_submission(
+        ctx: Context<AddInterviewSubmission>,
+        developer: Pubkey,
+        test_submit_url: String,
+    ) -> anchor_lang::Result<()> {
+        if developer.to_string().is_empty() || test_submit_url.trim().is_empty() {
+            return Err(error!(Errors::CannotAddSubmission));
+        }
+        let interview = &mut ctx.accounts.interview;
+
+        if interview.developer == developer {
+            return Err(error!(Errors::AlreadySubmitted));
+        }
+
+        interview.developer = developer;
+        interview.test_submit_url = test_submit_url;
+        Ok(())
+    }
+
+    pub fn update_interview_result(
+        ctx: Context<UpdateInterviewResult>,
+        result: String,
+    ) -> anchor_lang::Result<()> {
+        if result.trim().is_empty() {
+            return Err(error!(Errors::CannotUpdateInterviewResult));
+        }
+        let interview = &mut ctx.accounts.interview;
+
+        interview.result = result;
+        Ok(())
+    }
 }
 
 #[error_code]
@@ -166,4 +216,8 @@ pub enum Errors {
     AlreadySubmitted,
     #[msg("Approvement cannot be added, missing data")]
     CannotAddApprovement,
+    #[msg("Interview cannot be added, missing data")]
+    CannotCreateInterview,
+    #[msg("Interview result cannot be updated, missing data")]
+    CannotUpdateInterviewResult,
 }

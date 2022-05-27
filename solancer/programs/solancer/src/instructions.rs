@@ -44,7 +44,7 @@ pub struct CreateCompany<'info> {
 
     #[account(mut)]
     pub authority: Signer<'info>,
-    
+
     /// CHECK: Simple test account
     pub system_program: UncheckedAccount<'info>,
 
@@ -79,7 +79,37 @@ pub struct CreateJD<'info> {
 pub struct UpdateSubmission<'info> {
     #[account(mut)]
     pub jd: Account<'info, JdAccount>,
-    
+
+    #[account(mut)]
+    pub authority: Signer<'info>,
+    pub clock: Sysvar<'info, Clock>,
+}
+#[derive(Accounts)]
+pub struct CreateInterview<'info> {
+    #[account(mut)]
+    pub interview: Account<'info, InterviewAccount>,
+
+    #[account(mut)]
+    pub authority: Signer<'info>,
+    /// CHECK: Simple test account
+    pub system_program: UncheckedAccount<'info>,
+
+    #[account(constraint = token_program.key == &token::ID)]
+    pub token_program: Program<'info, Token>,
+    pub clock: Sysvar<'info, Clock>,
+}
+
+#[derive(Accounts)]
+pub struct AddInterviewSubmission<'info> {
+    #[account(mut)]
+    pub interview: Account<'info, InterviewAccount>,
+    pub clock: Sysvar<'info, Clock>,
+}
+#[derive(Accounts)]
+pub struct UpdateInterviewResult<'info> {
+    #[account(mut, has_one = authority)]
+    pub interview: Account<'info, InterviewAccount>,
+
     #[account(mut)]
     pub authority: Signer<'info>,
     pub clock: Sysvar<'info, Clock>,

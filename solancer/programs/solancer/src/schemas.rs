@@ -50,6 +50,20 @@ impl JdAccount {
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct PendingSubmission {
-   pub msg: String,
-   pub developer: Pubkey,
+    pub msg: String,
+    pub developer: Pubkey,
+}
+
+#[account]
+pub struct InterviewAccount {
+    pub authority: Pubkey,
+    pub developer: Pubkey,
+    pub jd_title: String,
+    pub test_url: String,
+    pub test_submit_url: String,
+    pub result: String,
+}
+
+impl InterviewAccount {
+    pub const MAX_SIZE: usize = 32 * 2 + NAME_LENGTH + URL_LENGTH * 3 + 20;
 }
