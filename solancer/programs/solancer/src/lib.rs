@@ -98,25 +98,27 @@ pub mod solancer {
         Ok(())
     }
 
-    pub fn add_submission(
-        ctx: Context<AddSubmission>,
-        developer: Pubkey,
-        msg: String,
-    ) -> anchor_lang::Result<()> {
-        if developer.to_string().is_empty() {
-            return Err(error!(Errors::CannotAddSubmission));
-        }
+    pub fn add_dev(ctx: Context<AddDev>, msg: String) -> anchor_lang::Result<()> {
+        let developer = ctx.accounts.authority.key();
+        println!("JD Added!");
+        // if developer.to_string().is_empty() {
+        //     return Err(error!(Errors::CannotAddSubmission));
+        // }
         let jd = &mut ctx.accounts.jd;
-        let mut pending_list = jd.pending_list.iter();
-        if pending_list.len() >= jd.max_slot as usize {
-            return Err(error!(Errors::NoSlotLeft));
-        }
-        if pending_list.any(|x| x.clone().developer == developer) {
-            return Err(error!(Errors::AlreadySubmitted));
-        }
+        // let mut pending_list = jd.pending_list.iter();
+        // if pending_list.len() >= jd.max_slot as usize {
+        //     return Err(error!(Errors::NoSlotLeft));
+        // }
+        // if pending_list.any(|x| x.clone().developer == developer) {
+        //     return Err(error!(Errors::AlreadySubmitted));
+        // }
 
-        let pending = PendingSubmission { developer, msg };
-        jd.pending_list.push(pending);
+        // let pending = PendingSubmission {
+        //     developer,
+        //     msg,
+        // };
+        jd.title = "changed".to_string();
+        jd.pending_list.push(developer);
         Ok(())
     }
 }
@@ -134,5 +136,5 @@ pub enum Errors {
     #[msg("JD has no slot left")]
     NoSlotLeft,
     #[msg("Submission already exists")]
-    AlreadySubmitted
+    AlreadySubmitted,
 }

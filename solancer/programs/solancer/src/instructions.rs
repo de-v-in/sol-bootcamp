@@ -59,12 +59,10 @@ pub struct CreateJD<'info> {
     // Authenticate user account
     #[account(
         init,
-        seeds = [b"jd".as_ref(), authority.key().as_ref()],
-        bump,
         payer = authority,
-        space = JDAccount::MAX_SIZE + 8
+        space = JdAccount::MAX_SIZE + 8
     )]
-    pub jd: Account<'info, JDAccount>,
+    pub jd: Account<'info, JdAccount>,
     #[account(mut)]
     pub authority: Signer<'info>,
 
@@ -78,8 +76,14 @@ pub struct CreateJD<'info> {
 }
 
 #[derive(Accounts)]
-pub struct AddSubmission<'info> {
+pub struct AddDev<'info> {
     #[account(mut)]
-    pub jd: Account<'info, JDAccount>,
+    pub jd: Account<'info, JdAccount>,
     pub clock: Sysvar<'info, Clock>,
+
+    #[account(mut)]
+    pub authority: Signer<'info>,
+
+    /// CHECK: Simple test account
+    pub system_program: UncheckedAccount<'info>,
 }

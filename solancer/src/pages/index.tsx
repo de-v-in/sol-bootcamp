@@ -37,13 +37,13 @@ const DefaultPage: IPageComponent = () => {
 
   return (
     <>
-      {isAccount ? (
+      {/* {isAccount ? (
         <div>
           <h1>Welcome to our App</h1>
         </div>
-      ) : (
-        <Signup />
-      )}
+      ) : ( */}
+      <Signup />
+      {/* )} */}
     </>
   );
 };

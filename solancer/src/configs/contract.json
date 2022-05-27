@@ -100,7 +100,7 @@
         {
           "name": "jd",
           "isMut": true,
-          "isSigner": false
+          "isSigner": true
         },
         {
           "name": "authority",
@@ -139,11 +139,16 @@
       ]
     },
     {
-      "name": "createSubmission",
+      "name": "addDev",
       "accounts": [
         {
-          "name": "submission",
+          "name": "jd",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "clock",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -155,29 +160,11 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "clock",
-          "isMut": false,
-          "isSigner": false
         }
       ],
       "args": [
         {
-          "name": "company",
-          "type": "publicKey"
-        },
-        {
-          "name": "jdTitle",
-          "type": "string"
-        },
-        {
-          "name": "developerMsg",
+          "name": "msg",
           "type": "string"
         }
       ]
@@ -245,7 +232,7 @@
       }
     },
     {
-      "name": "JDAccount",
+      "name": "JdAccount",
       "type": {
         "kind": "struct",
         "fields": [
@@ -266,38 +253,38 @@
             "type": "u64"
           },
           {
-            "name": "submitIdList",
+            "name": "acceptedList",
             "type": {
-              "vec": "u64"
+              "vec": "publicKey"
             }
+          },
+          {
+            "name": "pendingList",
+            "type": {
+              "vec": "publicKey"
+            }
+          },
+          {
+            "name": "isAvailable",
+            "type": "bool"
           }
         ]
       }
-    },
+    }
+  ],
+  "types": [
     {
-      "name": "SubmissionAccount",
+      "name": "PendingSubmission",
       "type": {
         "kind": "struct",
         "fields": [
           {
+            "name": "msg",
+            "type": "string"
+          },
+          {
             "name": "developer",
             "type": "publicKey"
-          },
-          {
-            "name": "company",
-            "type": "publicKey"
-          },
-          {
-            "name": "jdTitle",
-            "type": "string"
-          },
-          {
-            "name": "developerMsg",
-            "type": "string"
-          },
-          {
-            "name": "isApprove",
-            "type": "bool"
           }
         ]
       }
@@ -317,12 +304,25 @@
     {
       "code": 6002,
       "name": "InvalidJDMaxSlot",
-      "msg": "JD cannot be created, max slot is 0 or greater than 100"
+      "msg": "JD cannot be created, max slot is 0 or greater than 50"
     },
     {
       "code": 6003,
-      "name": "CannotCreateSubmission",
-      "msg": "Submission cannot be created, missing data"
+      "name": "CannotAddSubmission",
+      "msg": "Submission cannot be added, missing data"
+    },
+    {
+      "code": 6004,
+      "name": "NoSlotLeft",
+      "msg": "JD has no slot left"
+    },
+    {
+      "code": 6005,
+      "name": "AlreadySubmitted",
+      "msg": "Submission already exists"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "FWPedSThzPVNU7QUjgVnJSDJFpd6P64KExFKxXUT5DtC"
+  }
 }

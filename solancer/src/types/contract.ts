@@ -100,7 +100,7 @@ export type Solancer = {
         {
           name: 'jd';
           isMut: true;
-          isSigner: false;
+          isSigner: true;
         },
         {
           name: 'authority';
@@ -135,6 +135,37 @@ export type Solancer = {
         {
           name: 'maxSlot';
           type: 'u64';
+        }
+      ];
+    },
+    {
+      name: 'addDev';
+      accounts: [
+        {
+          name: 'jd';
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: 'clock';
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: 'authority';
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: 'systemProgram';
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: 'msg';
+          type: 'string';
         }
       ];
     }
@@ -230,9 +261,7 @@ export type Solancer = {
           {
             name: 'pendingList';
             type: {
-              vec: {
-                defined: 'PendingSubmission';
-              };
+              vec: 'publicKey';
             };
           },
           {
@@ -279,8 +308,18 @@ export type Solancer = {
     },
     {
       code: 6003;
-      name: 'CannotCreateSubmission';
-      msg: 'Submission cannot be created, missing data';
+      name: 'CannotAddSubmission';
+      msg: 'Submission cannot be added, missing data';
+    },
+    {
+      code: 6004;
+      name: 'NoSlotLeft';
+      msg: 'JD has no slot left';
+    },
+    {
+      code: 6005;
+      name: 'AlreadySubmitted';
+      msg: 'Submission already exists';
     }
   ];
 };
@@ -387,7 +426,7 @@ export const IDL: Solancer = {
         {
           name: 'jd',
           isMut: true,
-          isSigner: false,
+          isSigner: true,
         },
         {
           name: 'authority',
@@ -422,6 +461,37 @@ export const IDL: Solancer = {
         {
           name: 'maxSlot',
           type: 'u64',
+        },
+      ],
+    },
+    {
+      name: 'addDev',
+      accounts: [
+        {
+          name: 'jd',
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: 'clock',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'authority',
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: 'systemProgram',
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: 'msg',
+          type: 'string',
         },
       ],
     },
@@ -517,9 +587,7 @@ export const IDL: Solancer = {
           {
             name: 'pendingList',
             type: {
-              vec: {
-                defined: 'PendingSubmission',
-              },
+              vec: 'publicKey',
             },
           },
           {
@@ -566,8 +634,18 @@ export const IDL: Solancer = {
     },
     {
       code: 6003,
-      name: 'CannotCreateSubmission',
-      msg: 'Submission cannot be created, missing data',
+      name: 'CannotAddSubmission',
+      msg: 'Submission cannot be added, missing data',
+    },
+    {
+      code: 6004,
+      name: 'NoSlotLeft',
+      msg: 'JD has no slot left',
+    },
+    {
+      code: 6005,
+      name: 'AlreadySubmitted',
+      msg: 'Submission already exists',
     },
   ],
 };

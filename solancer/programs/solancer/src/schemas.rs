@@ -33,17 +33,17 @@ impl CompanyAccount {
 }
 
 #[account]
-pub struct JDAccount {
+pub struct JdAccount {
     pub company: Pubkey,
     pub title: String,
     pub jd_content_url: String,
     pub max_slot: u64,
     pub accepted_list: Vec<Pubkey>,
-    pub pending_list: Vec<PendingSubmission>,
+    pub pending_list: Vec<Pubkey>,
     pub is_available: bool,
 }
 
-impl JDAccount {
+impl JdAccount {
     pub const MAX_SIZE: usize =
         32 + NAME_LENGTH + URL_LENGTH + 8 + MAX_CV_SLOT * (32 + size_of::<PendingSubmission>()) + 1;
 }
