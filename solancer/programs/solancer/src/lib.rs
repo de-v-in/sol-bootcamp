@@ -98,27 +98,25 @@ pub mod solancer {
         Ok(())
     }
 
-    pub fn add_dev(ctx: Context<AddDev>, msg: String) -> anchor_lang::Result<()> {
+    pub fn add_submission(ctx: Context<AddSubmission>, msg: String) -> anchor_lang::Result<()> {
         let developer = ctx.accounts.authority.key();
-        println!("JD Added!");
-        // if developer.to_string().is_empty() {
-        //     return Err(error!(Errors::CannotAddSubmission));
-        // }
+        if developer.to_string().is_empty() {
+            return Err(error!(Errors::CannotAddSubmission));
+        }
         let jd = &mut ctx.accounts.jd;
-        // let mut pending_list = jd.pending_list.iter();
-        // if pending_list.len() >= jd.max_slot as usize {
-        //     return Err(error!(Errors::NoSlotLeft));
-        // }
-        // if pending_list.any(|x| x.clone().developer == developer) {
-        //     return Err(error!(Errors::AlreadySubmitted));
-        // }
+        let mut pending_list = jd.pending_list.iter();
+        if pending_list.len() >= jd.max_slot as usize {
+            return Err(error!(Errors::NoSlotLeft));
+        }
+        if pending_list.any(|x| x.clone().developer == developer) {
+            return Err(error!(Errors::AlreadySubmitted));
+        }
 
-        // let pending = PendingSubmission {
-        //     developer,
-        //     msg,
-        // };
-        jd.title = "changed".to_string();
-        jd.pending_list.push(developer);
+        let pending = PendingSubmission {
+            developer,
+            msg,
+        };
+        jd.pending_list.push(pending);
         Ok(())
     }
 }

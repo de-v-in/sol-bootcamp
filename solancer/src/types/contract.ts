@@ -139,7 +139,7 @@ export type Solancer = {
       ];
     },
     {
-      name: 'addDev';
+      name: 'addSubmission';
       accounts: [
         {
           name: 'jd';
@@ -155,11 +155,6 @@ export type Solancer = {
           name: 'authority';
           isMut: true;
           isSigner: true;
-        },
-        {
-          name: 'systemProgram';
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [
@@ -261,7 +256,9 @@ export type Solancer = {
           {
             name: 'pendingList';
             type: {
-              vec: 'publicKey';
+              vec: {
+                defined: 'PendingSubmission';
+              };
             };
           },
           {
@@ -465,7 +462,7 @@ export const IDL: Solancer = {
       ],
     },
     {
-      name: 'addDev',
+      name: 'addSubmission',
       accounts: [
         {
           name: 'jd',
@@ -481,11 +478,6 @@ export const IDL: Solancer = {
           name: 'authority',
           isMut: true,
           isSigner: true,
-        },
-        {
-          name: 'systemProgram',
-          isMut: false,
-          isSigner: false,
         },
       ],
       args: [
@@ -587,7 +579,9 @@ export const IDL: Solancer = {
           {
             name: 'pendingList',
             type: {
-              vec: 'publicKey',
+              vec: {
+                defined: 'PendingSubmission',
+              },
             },
           },
           {

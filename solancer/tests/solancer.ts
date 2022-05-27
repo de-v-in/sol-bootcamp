@@ -82,6 +82,7 @@ describe('Solancer testsuite', async () => {
       .signers([jd2])
       .rpc();
     console.log('tx2', tx2);
+
     try {
       const accounts = await program.account.jdAccount.all();
       assert(accounts.length === 2, 'Expect to have 2 JD accounts');
@@ -96,13 +97,16 @@ describe('Solancer testsuite', async () => {
       const accounts = await program.account.jdAccount.all();
       assert(accounts.length === 2, 'Expect to have 2 JD accounts');
       let ac1 = accounts.find((ac) => ac.account.title === 'title1');
+
       if (ac1) {
-        let jd_ac = await program.account.jdAccount.fetch(ac1.publicKey);
-        const tx = await program.methods.addDev('add me').accounts({
-          jd: jd_ac,
-          authority: provider.wallet.publicKey,
-          systemProgram: SystemProgram.programId,
-        });
+        const tx = await program.methods
+          .addSubmission('add me')
+          .accounts({
+            jd: ac1.publicKey,
+            authority: provider.wallet.publicKey,
+            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+          })
+          .rpc();
         console.log('tx', tx);
       }
     } catch (e) {

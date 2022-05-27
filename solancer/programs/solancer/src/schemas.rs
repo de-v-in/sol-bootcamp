@@ -39,7 +39,7 @@ pub struct JdAccount {
     pub jd_content_url: String,
     pub max_slot: u64,
     pub accepted_list: Vec<Pubkey>,
-    pub pending_list: Vec<Pubkey>,
+    pub pending_list: Vec<PendingSubmission>,
     pub is_available: bool,
 }
 
