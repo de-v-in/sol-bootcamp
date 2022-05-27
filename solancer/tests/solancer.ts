@@ -10,6 +10,7 @@ import { Solancer } from '../target/types/solancer';
 const provider = anchor.AnchorProvider.env();
 const program = anchor.workspace.Solancer as Program<Solancer>;
 const programId = program.programId;
+const companyPubkey = provider.wallet.publicKey;
 anchor.setProvider(provider);
 
 describe('Solancer testsuite', async () => {
@@ -32,7 +33,7 @@ describe('Solancer testsuite', async () => {
     const { name, seed, args } = tc;
     it(name, async () => {
       let [pda] = await anchor.web3.PublicKey.findProgramAddress(
-        [utf8.encode(seed), provider.wallet.publicKey.toBuffer()],
+        [utf8.encode(seed), companyPubkey.toBuffer()],
         programId
       );
       let programMethodObj: any = program.methods;
@@ -41,7 +42,7 @@ describe('Solancer testsuite', async () => {
         const tx = await method(...args)
           .accounts({
             [seed]: pda,
-            authority: provider.wallet.publicKey,
+            authority: companyPubkey,
             clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
             systemProgram: SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
@@ -60,7 +61,7 @@ describe('Solancer testsuite', async () => {
       .createJd('title1', 'jd_content_url1', new anchor.BN(10))
       .accounts({
         jd: jd1.publicKey,
-        authority: provider.wallet.publicKey,
+        authority: companyPubkey,
         clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
         systemProgram: SystemProgram.programId,
         tokenProgram: TOKEN_PROGRAM_ID,
@@ -74,7 +75,7 @@ describe('Solancer testsuite', async () => {
       .createJd('title2', 'jd_content_url2', new anchor.BN(10))
       .accounts({
         jd: jd2.publicKey,
-        authority: provider.wallet.publicKey,
+        authority: companyPubkey,
         systemProgram: SystemProgram.programId,
         tokenProgram: TOKEN_PROGRAM_ID,
         clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
@@ -95,19 +96,28 @@ describe('Solancer testsuite', async () => {
   it('Add submission to JD', async () => {
     try {
       const accounts = await program.account.jdAccount.all();
+      const dev = anchor.web3.Keypair.generate();
       assert(accounts.length === 2, 'Expect to have 2 JD accounts');
       let ac1 = accounts.find((ac) => ac.account.title === 'title1');
 
       if (ac1) {
-        const tx = await program.methods
-          .addSubmission('add me')
+        await program.methods
+          .addSubmission(dev.publicKey, 'add me')
           .accounts({
             jd: ac1.publicKey,
-            authority: provider.wallet.publicKey,
+            authority: companyPubkey,
             clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
           })
           .rpc();
-        console.log('tx', tx);
+
+        await program.methods
+          .addApprovement(dev.publicKey)
+          .accounts({
+            jd: ac1.publicKey,
+            authority: companyPubkey,
+            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+          })
+          .rpc();
       }
     } catch (e) {
       console.log(e);
@@ -116,6 +126,8 @@ describe('Solancer testsuite', async () => {
 
   it('Fetch after add', async () => {
     const afterAccounts = await program.account.jdAccount.all();
-    console.log(afterAccounts);
+    let ac1 = afterAccounts.find((ac) => ac.account.title === 'title1');
+    console.log(ac1?.account.pendingList);
+    console.log(ac1?.account.approvedList);
   });
 });

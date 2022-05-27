@@ -76,11 +76,11 @@ pub struct CreateJD<'info> {
 }
 
 #[derive(Accounts)]
-pub struct AddSubmission<'info> {
+pub struct UpdateSubmission<'info> {
     #[account(mut)]
     pub jd: Account<'info, JdAccount>,
-    pub clock: Sysvar<'info, Clock>,
-
+    
     #[account(mut)]
     pub authority: Signer<'info>,
+    pub clock: Sysvar<'info, Clock>,
 }

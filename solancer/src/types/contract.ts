@@ -147,20 +147,50 @@ export type Solancer = {
           isSigner: false;
         },
         {
+          name: 'authority';
+          isMut: true;
+          isSigner: true;
+        },
+        {
           name: 'clock';
           isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: 'developer';
+          type: 'publicKey';
+        },
+        {
+          name: 'msg';
+          type: 'string';
+        }
+      ];
+    },
+    {
+      name: 'addApprovement';
+      accounts: [
+        {
+          name: 'jd';
+          isMut: true;
           isSigner: false;
         },
         {
           name: 'authority';
           isMut: true;
           isSigner: true;
+        },
+        {
+          name: 'clock';
+          isMut: false;
+          isSigner: false;
         }
       ];
       args: [
         {
-          name: 'msg';
-          type: 'string';
+          name: 'developer';
+          type: 'publicKey';
         }
       ];
     }
@@ -248,7 +278,7 @@ export type Solancer = {
             type: 'u64';
           },
           {
-            name: 'acceptedList';
+            name: 'approvedList';
             type: {
               vec: 'publicKey';
             };
@@ -317,6 +347,11 @@ export type Solancer = {
       code: 6005;
       name: 'AlreadySubmitted';
       msg: 'Submission already exists';
+    },
+    {
+      code: 6006;
+      name: 'CannotAddApprovement';
+      msg: 'Approvement cannot be added, missing data';
     }
   ];
 };
@@ -470,8 +505,33 @@ export const IDL: Solancer = {
           isSigner: false,
         },
         {
+          name: 'authority',
+          isMut: true,
+          isSigner: true,
+        },
+        {
           name: 'clock',
           isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: 'developer',
+          type: 'publicKey',
+        },
+        {
+          name: 'msg',
+          type: 'string',
+        },
+      ],
+    },
+    {
+      name: 'addApprovement',
+      accounts: [
+        {
+          name: 'jd',
+          isMut: true,
           isSigner: false,
         },
         {
@@ -479,11 +539,16 @@ export const IDL: Solancer = {
           isMut: true,
           isSigner: true,
         },
+        {
+          name: 'clock',
+          isMut: false,
+          isSigner: false,
+        },
       ],
       args: [
         {
-          name: 'msg',
-          type: 'string',
+          name: 'developer',
+          type: 'publicKey',
         },
       ],
     },
@@ -571,7 +636,7 @@ export const IDL: Solancer = {
             type: 'u64',
           },
           {
-            name: 'acceptedList',
+            name: 'approvedList',
             type: {
               vec: 'publicKey',
             },
@@ -640,6 +705,11 @@ export const IDL: Solancer = {
       code: 6005,
       name: 'AlreadySubmitted',
       msg: 'Submission already exists',
+    },
+    {
+      code: 6006,
+      name: 'CannotAddApprovement',
+      msg: 'Approvement cannot be added, missing data',
     },
   ],
 };

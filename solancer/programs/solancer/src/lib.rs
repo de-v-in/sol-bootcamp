@@ -98,8 +98,7 @@ pub mod solancer {
         Ok(())
     }
 
-    pub fn add_submission(ctx: Context<AddSubmission>, msg: String) -> anchor_lang::Result<()> {
-        let developer = ctx.accounts.authority.key();
+    pub fn add_submission(ctx: Context<UpdateSubmission>,developer: Pubkey, msg: String) -> anchor_lang::Result<()> {
         if developer.to_string().is_empty() {
             return Err(error!(Errors::CannotAddSubmission));
         }
@@ -112,11 +111,41 @@ pub mod solancer {
             return Err(error!(Errors::AlreadySubmitted));
         }
 
-        let pending = PendingSubmission {
-            developer,
-            msg,
-        };
+        let pending = PendingSubmission { developer, msg };
         jd.pending_list.push(pending);
+        Ok(())
+    }
+
+    pub fn add_approvement(
+        ctx: Context<UpdateSubmission>,
+        developer: Pubkey,
+    ) -> anchor_lang::Result<()> {
+        let signer = ctx.accounts.authority.key();
+
+        if signer != ctx.accounts.jd.company {
+            return Err(error!(Errors::CannotAddApprovement));
+        }
+
+        if developer.to_string().is_empty() {
+            return Err(error!(Errors::CannotAddApprovement));
+        }
+        let jd = &mut ctx.accounts.jd;
+        let pending_list = jd
+            .pending_list
+            .iter()
+            .filter(|x| x.clone().developer != developer)
+            .cloned()
+            .collect::<Vec<PendingSubmission>>();
+        let mut approved_list = jd.approved_list.iter();
+        if approved_list.len() >= jd.max_slot as usize {
+            return Err(error!(Errors::NoSlotLeft));
+        }
+        if approved_list.any(|&x| x == developer) {
+            return Err(error!(Errors::AlreadySubmitted));
+        }
+
+        jd.approved_list.push(developer);
+        jd.pending_list = pending_list;
         Ok(())
     }
 }
@@ -135,4 +164,6 @@ pub enum Errors {
     NoSlotLeft,
     #[msg("Submission already exists")]
     AlreadySubmitted,
+    #[msg("Approvement cannot be added, missing data")]
+    CannotAddApprovement,
 }
