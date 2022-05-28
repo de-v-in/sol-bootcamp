@@ -1,10 +1,23 @@
-.wallet-adapter-button-trigger {
-  background: white !important;
-  color: #444 !important;
-  border: 1px solid #999 !important;
-  transition: all 0.3s ease-in-out;
-  &:hover {
-    background: black !important;
-    color: white !important;
+.hacked-btn {
+  .wallet-adapter-button-trigger {
+    background: transparent !important;
+    border: none !important;
+    transition: all 0.3s ease-in-out;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+    padding: none !important;
+  }
+  .wallet-adapter-button:hover {
+    background-color: transparent !important;
+  }
+  .wallet-adapter-button {
+    height: unset !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+    padding: none !important;
+    border-radius: 12px !important;
+  }
+  .wallet-adapter-button-start-icon {
+    display: none;
   }
 }
