@@ -71,7 +71,6 @@ pub struct CreateJD<'info> {
 
     #[account(constraint = token_program.key == &token::ID)]
     pub token_program: Program<'info, Token>,
-
     pub clock: Sysvar<'info, Clock>,
 }
 
@@ -86,7 +85,11 @@ pub struct UpdateSubmission<'info> {
 }
 #[derive(Accounts)]
 pub struct CreateInterview<'info> {
-    #[account(mut)]
+    #[account(
+        init,
+        payer = authority,
+        space = InterviewAccount::MAX_SIZE + 8
+    )]
     pub interview: Account<'info, InterviewAccount>,
 
     #[account(mut)]

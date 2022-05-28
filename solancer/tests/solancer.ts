@@ -39,7 +39,7 @@ describe('Solancer testsuite', async () => {
       let programMethodObj: any = program.methods;
       let method: any = programMethodObj[tc.method];
       try {
-        const tx = await method(...args)
+        await method(...args)
           .accounts({
             [seed]: pda,
             authority: companyPubkey,
@@ -48,7 +48,6 @@ describe('Solancer testsuite', async () => {
             tokenProgram: TOKEN_PROGRAM_ID,
           })
           .rpc();
-        console.log('Your transaction signature', tx);
       } catch (error) {
         console.log(error);
       }
@@ -57,7 +56,7 @@ describe('Solancer testsuite', async () => {
 
   it('Create JD', async () => {
     const jd1 = anchor.web3.Keypair.generate();
-    const tx1 = await program.methods
+    await program.methods
       .createJd('title1', 'jd_content_url1', new anchor.BN(10))
       .accounts({
         jd: jd1.publicKey,
@@ -68,10 +67,9 @@ describe('Solancer testsuite', async () => {
       })
       .signers([jd1])
       .rpc();
-    console.log('tx1', tx1);
 
     const jd2 = anchor.web3.Keypair.generate();
-    const tx2 = await program.methods
+    await program.methods
       .createJd('title2', 'jd_content_url2', new anchor.BN(10))
       .accounts({
         jd: jd2.publicKey,
@@ -82,7 +80,6 @@ describe('Solancer testsuite', async () => {
       })
       .signers([jd2])
       .rpc();
-    console.log('tx2', tx2);
 
     try {
       const accounts = await program.account.jdAccount.all();
@@ -93,7 +90,7 @@ describe('Solancer testsuite', async () => {
     }
   });
 
-  it('Add submission to JD', async () => {
+  it('Add submission & approvement to JD', async () => {
     try {
       const accounts = await program.account.jdAccount.all();
       const dev = anchor.web3.Keypair.generate();
@@ -119,15 +116,69 @@ describe('Solancer testsuite', async () => {
           })
           .rpc();
       }
+      const afterAccounts = await program.account.jdAccount.all();
+      let aac1 = afterAccounts.find((ac) => ac.account.title === 'title1');
+      console.log(aac1?.account.pendingList);
+      console.log(aac1?.account.approvedList);
     } catch (e) {
       console.log(e);
     }
   });
 
-  it('Fetch after add', async () => {
-    const afterAccounts = await program.account.jdAccount.all();
-    let ac1 = afterAccounts.find((ac) => ac.account.title === 'title1');
-    console.log(ac1?.account.pendingList);
-    console.log(ac1?.account.approvedList);
+  it('Create interview', async () => {
+    const interviewKeyPair = anchor.web3.Keypair.generate();
+    await program.methods
+      .createInterview('jd_title', 'test_url')
+      .accounts({
+        interview: interviewKeyPair.publicKey,
+        authority: companyPubkey,
+        clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+        systemProgram: SystemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      })
+      .signers([interviewKeyPair])
+      .rpc();
+
+    const interview = await program.account.interviewAccount.fetch(interviewKeyPair.publicKey);
+    assert(interview.jdTitle.toString() === 'jd_title', 'Expect to have title');
+  });
+
+  it('Add interview submission', async () => {
+    const interview = await (
+      await program.account.interviewAccount.all()
+    ).find((itv) => itv.account.jdTitle === 'jd_title');
+    const dev = anchor.web3.Keypair.generate();
+    await program.methods
+      .addInterviewSubmission(dev.publicKey, 'test_submit_url')
+      .accounts({
+        interview: interview?.publicKey,
+        clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+      })
+      .rpc();
+    if (interview) {
+      const afterAdd = await program.account.interviewAccount.fetch(interview?.publicKey);
+      assert(
+        afterAdd.testSubmitUrl.toString() === 'test_submit_url',
+        'Expect to have testSubmitUrl'
+      );
+    }
+  });
+
+  it('Update interview result', async () => {
+    const interview = await (
+      await program.account.interviewAccount.all()
+    ).find((itv) => itv.account.jdTitle === 'jd_title');
+    await program.methods
+      .updateInterviewResult('result')
+      .accounts({
+        interview: interview?.publicKey,
+        clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+        authority: companyPubkey,
+      })
+      .rpc();
+    if (interview) {
+      const afterAdd = await program.account.interviewAccount.fetch(interview?.publicKey);
+      assert(afterAdd.result.toString() === 'result', 'Expect to have result');
+    }
   });
 });
