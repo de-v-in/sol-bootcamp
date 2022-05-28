@@ -1,6 +1,9 @@
 use super::schemas::*;
 use anchor_lang::prelude::*;
-use anchor_spl::token::{self, Token};
+use anchor_spl::{
+    associated_token::AssociatedToken,
+    token::{self, Token},
+};
 
 #[derive(Accounts)]
 pub struct CreateDeveloper<'info> {
@@ -25,9 +28,10 @@ pub struct CreateDeveloper<'info> {
     // Token program
     #[account(constraint = token_program.key == &token::ID)]
     pub token_program: Program<'info, Token>,
-
+    pub associated_token_program: Program<'info, AssociatedToken>,
     // Clock to save time
     pub clock: Sysvar<'info, Clock>,
+    pub rent: Sysvar<'info, Rent>,
 }
 
 #[derive(Accounts)]
@@ -50,8 +54,9 @@ pub struct CreateCompany<'info> {
 
     #[account(constraint = token_program.key == &token::ID)]
     pub token_program: Program<'info, Token>,
-
+    pub associated_token_program: Program<'info, AssociatedToken>,
     pub clock: Sysvar<'info, Clock>,
+    pub rent: Sysvar<'info, Rent>,
 }
 
 #[derive(Accounts)]
@@ -72,6 +77,7 @@ pub struct CreateJD<'info> {
     #[account(constraint = token_program.key == &token::ID)]
     pub token_program: Program<'info, Token>,
     pub clock: Sysvar<'info, Clock>,
+    pub rent: Sysvar<'info, Rent>,
 }
 
 #[derive(Accounts)]
@@ -81,7 +87,6 @@ pub struct UpdateSubmission<'info> {
 
     #[account(mut)]
     pub authority: Signer<'info>,
-    pub clock: Sysvar<'info, Clock>,
 }
 #[derive(Accounts)]
 pub struct CreateInterview<'info> {
@@ -100,13 +105,13 @@ pub struct CreateInterview<'info> {
     #[account(constraint = token_program.key == &token::ID)]
     pub token_program: Program<'info, Token>,
     pub clock: Sysvar<'info, Clock>,
+    pub rent: Sysvar<'info, Rent>,
 }
 
 #[derive(Accounts)]
 pub struct AddInterviewSubmission<'info> {
     #[account(mut)]
     pub interview: Account<'info, InterviewAccount>,
-    pub clock: Sysvar<'info, Clock>,
 }
 #[derive(Accounts)]
 pub struct UpdateInterviewResult<'info> {
@@ -115,5 +120,4 @@ pub struct UpdateInterviewResult<'info> {
 
     #[account(mut)]
     pub authority: Signer<'info>,
-    pub clock: Sysvar<'info, Clock>,
 }

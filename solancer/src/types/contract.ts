@@ -26,7 +26,17 @@ export type Solancer = {
           isSigner: false;
         },
         {
+          name: 'associatedTokenProgram';
+          isMut: false;
+          isSigner: false;
+        },
+        {
           name: 'clock';
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: 'rent';
           isMut: false;
           isSigner: false;
         }
@@ -74,7 +84,17 @@ export type Solancer = {
           isSigner: false;
         },
         {
+          name: 'associatedTokenProgram';
+          isMut: false;
+          isSigner: false;
+        },
+        {
           name: 'clock';
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: 'rent';
           isMut: false;
           isSigner: false;
         }
@@ -121,6 +141,11 @@ export type Solancer = {
           name: 'clock';
           isMut: false;
           isSigner: false;
+        },
+        {
+          name: 'rent';
+          isMut: false;
+          isSigner: false;
         }
       ];
       args: [
@@ -150,11 +175,6 @@ export type Solancer = {
           name: 'authority';
           isMut: true;
           isSigner: true;
-        },
-        {
-          name: 'clock';
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [
@@ -180,11 +200,6 @@ export type Solancer = {
           name: 'authority';
           isMut: true;
           isSigner: true;
-        },
-        {
-          name: 'clock';
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [
@@ -221,6 +236,11 @@ export type Solancer = {
           name: 'clock';
           isMut: false;
           isSigner: false;
+        },
+        {
+          name: 'rent';
+          isMut: false;
+          isSigner: false;
         }
       ];
       args: [
@@ -240,11 +260,6 @@ export type Solancer = {
         {
           name: 'interview';
           isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'clock';
-          isMut: false;
           isSigner: false;
         }
       ];
@@ -271,11 +286,6 @@ export type Solancer = {
           name: 'authority';
           isMut: true;
           isSigner: true;
-        },
-        {
-          name: 'clock';
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [
@@ -517,7 +527,17 @@ export const IDL: Solancer = {
           isSigner: false,
         },
         {
+          name: 'associatedTokenProgram',
+          isMut: false,
+          isSigner: false,
+        },
+        {
           name: 'clock',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'rent',
           isMut: false,
           isSigner: false,
         },
@@ -565,7 +585,17 @@ export const IDL: Solancer = {
           isSigner: false,
         },
         {
+          name: 'associatedTokenProgram',
+          isMut: false,
+          isSigner: false,
+        },
+        {
           name: 'clock',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'rent',
           isMut: false,
           isSigner: false,
         },
@@ -613,6 +643,11 @@ export const IDL: Solancer = {
           isMut: false,
           isSigner: false,
         },
+        {
+          name: 'rent',
+          isMut: false,
+          isSigner: false,
+        },
       ],
       args: [
         {
@@ -642,11 +677,6 @@ export const IDL: Solancer = {
           isMut: true,
           isSigner: true,
         },
-        {
-          name: 'clock',
-          isMut: false,
-          isSigner: false,
-        },
       ],
       args: [
         {
@@ -671,11 +701,6 @@ export const IDL: Solancer = {
           name: 'authority',
           isMut: true,
           isSigner: true,
-        },
-        {
-          name: 'clock',
-          isMut: false,
-          isSigner: false,
         },
       ],
       args: [
@@ -713,6 +738,11 @@ export const IDL: Solancer = {
           isMut: false,
           isSigner: false,
         },
+        {
+          name: 'rent',
+          isMut: false,
+          isSigner: false,
+        },
       ],
       args: [
         {
@@ -731,11 +761,6 @@ export const IDL: Solancer = {
         {
           name: 'interview',
           isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'clock',
-          isMut: false,
           isSigner: false,
         },
       ],
@@ -762,11 +787,6 @@ export const IDL: Solancer = {
           name: 'authority',
           isMut: true,
           isSigner: true,
-        },
-        {
-          name: 'clock',
-          isMut: false,
-          isSigner: false,
         },
       ],
       args: [

@@ -44,8 +44,10 @@ describe('Solancer testsuite', async () => {
             [seed]: pda,
             authority: companyPubkey,
             clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+            rent: anchor.web3.SYSVAR_RENT_PUBKEY,
             systemProgram: SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
+            associatedTokenProgram: anchor.utils.token.ASSOCIATED_PROGRAM_ID,
           })
           .rpc();
       } catch (error) {
@@ -62,6 +64,7 @@ describe('Solancer testsuite', async () => {
         jd: jd1.publicKey,
         authority: companyPubkey,
         clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         systemProgram: SystemProgram.programId,
         tokenProgram: TOKEN_PROGRAM_ID,
       })
@@ -103,7 +106,6 @@ describe('Solancer testsuite', async () => {
           .accounts({
             jd: ac1.publicKey,
             authority: companyPubkey,
-            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
           })
           .rpc();
 
@@ -112,7 +114,6 @@ describe('Solancer testsuite', async () => {
           .accounts({
             jd: ac1.publicKey,
             authority: companyPubkey,
-            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
           })
           .rpc();
       }
@@ -133,6 +134,7 @@ describe('Solancer testsuite', async () => {
         interview: interviewKeyPair.publicKey,
         authority: companyPubkey,
         clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         systemProgram: SystemProgram.programId,
         tokenProgram: TOKEN_PROGRAM_ID,
       })
@@ -152,7 +154,6 @@ describe('Solancer testsuite', async () => {
       .addInterviewSubmission(dev.publicKey, 'test_submit_url')
       .accounts({
         interview: interview?.publicKey,
-        clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
       })
       .rpc();
     if (interview) {
@@ -172,7 +173,6 @@ describe('Solancer testsuite', async () => {
       .updateInterviewResult('result')
       .accounts({
         interview: interview?.publicKey,
-        clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
         authority: companyPubkey,
       })
       .rpc();
