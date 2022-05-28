@@ -12,7 +12,7 @@ const program = anchor.workspace.Solancer as Program<Solancer>;
 const programId = program.programId;
 const companyPubkey = provider.wallet.publicKey;
 anchor.setProvider(provider);
-
+const DEV_SOL_MINT = 'skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq';
 describe('Solancer testsuite', async () => {
   let createPdaTests = [
     {
@@ -28,7 +28,15 @@ describe('Solancer testsuite', async () => {
       method: 'createCompany',
     },
   ];
-
+  const [treasurer] = await anchor.web3.PublicKey.findProgramAddress(
+    [Buffer.from('treasurer'), companyPubkey.toBuffer()],
+    program.programId
+  );
+  const mintPublicKey = new anchor.web3.PublicKey(DEV_SOL_MINT);
+  const tokenAccount = await anchor.utils.token.associatedAddress({
+    mint: mintPublicKey,
+    owner: treasurer,
+  });
   createPdaTests.forEach((tc: any) => {
     const { name, seed, args } = tc;
     it(name, async () => {
@@ -44,8 +52,13 @@ describe('Solancer testsuite', async () => {
             [seed]: pda,
             authority: companyPubkey,
             clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+            rent: anchor.web3.SYSVAR_RENT_PUBKEY,
             systemProgram: SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
+            associatedTokenProgram: anchor.utils.token.ASSOCIATED_PROGRAM_ID,
+            treasurer,
+            mint: DEV_SOL_MINT,
+            tokenAccount,
           })
           .rpc();
       } catch (error) {
@@ -62,6 +75,7 @@ describe('Solancer testsuite', async () => {
         jd: jd1.publicKey,
         authority: companyPubkey,
         clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         systemProgram: SystemProgram.programId,
         tokenProgram: TOKEN_PROGRAM_ID,
       })
@@ -103,7 +117,6 @@ describe('Solancer testsuite', async () => {
           .accounts({
             jd: ac1.publicKey,
             authority: companyPubkey,
-            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
           })
           .rpc();
 
@@ -112,7 +125,6 @@ describe('Solancer testsuite', async () => {
           .accounts({
             jd: ac1.publicKey,
             authority: companyPubkey,
-            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
           })
           .rpc();
       }
@@ -133,6 +145,7 @@ describe('Solancer testsuite', async () => {
         interview: interviewKeyPair.publicKey,
         authority: companyPubkey,
         clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         systemProgram: SystemProgram.programId,
         tokenProgram: TOKEN_PROGRAM_ID,
       })
@@ -152,7 +165,6 @@ describe('Solancer testsuite', async () => {
       .addInterviewSubmission(dev.publicKey, 'test_submit_url')
       .accounts({
         interview: interview?.publicKey,
-        clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
       })
       .rpc();
     if (interview) {
@@ -172,7 +184,6 @@ describe('Solancer testsuite', async () => {
       .updateInterviewResult('result')
       .accounts({
         interview: interview?.publicKey,
-        clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
         authority: companyPubkey,
       })
       .rpc();

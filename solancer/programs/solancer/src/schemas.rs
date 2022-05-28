@@ -78,3 +78,25 @@ pub struct InterviewAccount {
 impl InterviewAccount {
     pub const MAX_SIZE: usize = 32 * 2 + NAME_LENGTH + URL_LENGTH * 3 + 20;
 }
+
+#[account]
+pub struct ContractAccount {
+    pub company: Pubkey,
+    pub developer: Pubkey,
+    pub company_peg_timeline: PegTimeRange,
+    pub developer_peg_timeline: PegTimeRange,
+    pub company_peg_amount: u64,
+    pub developer_peg_amount: u64,
+    pub start: u64,
+    pub end: u64,
+}
+
+impl ContractAccount {
+    pub const MAX_SIZE: usize = 2 * 32 + 2 * (size_of::<PegTimeRange>()) + 2 * 8;
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
+pub struct PegTimeRange {
+    pub from: u64,
+    pub to: u64,
+}

@@ -10,6 +10,7 @@ declare_id!("FWPedSThzPVNU7QUjgVnJSDJFpd6P64KExFKxXUT5DtC");
 #[program]
 pub mod solancer {
     use anchor_lang::solana_program::log::sol_log_compute_units;
+    use anchor_spl::token;
 
     use super::*;
 
@@ -181,7 +182,7 @@ pub mod solancer {
         if interview.developer == developer {
             return Err(error!(Errors::AlreadySubmitted));
         }
-        
+
         interview.developer = developer;
         interview.test_submit_url = test_submit_url;
         Ok(())
@@ -197,6 +198,153 @@ pub mod solancer {
         let interview = &mut ctx.accounts.interview;
 
         interview.result = result;
+        Ok(())
+    }
+
+    pub fn create_contract(
+        ctx: Context<CreateContract>,
+        developer: Pubkey,
+        company_peg_from: u64,
+        company_peg_to: u64,
+        developer_peg_from: u64,
+        developer_peg_to: u64,
+        company_peg_amount: u64,
+        developer_peg_amount: u64,
+        start: u64,
+        end: u64,
+    ) -> anchor_lang::Result<()> {
+        if developer.to_string().is_empty() {
+            return Err(error!(Errors::CannotCreateContract));
+        }
+        let now = Clock::get().unwrap().unix_timestamp as u64;
+        if now > company_peg_to
+            || now > developer_peg_to
+            || company_peg_from - company_peg_to <= 0
+            || developer_peg_from - developer_peg_to <= 0
+        {
+            return Err(error!(Errors::InvalidPegTime));
+        }
+        let contract = &mut ctx.accounts.contract;
+        contract.company = ctx.accounts.authority.key();
+        contract.developer = developer;
+        let company_peg_time = PegTimeRange {
+            from: company_peg_from,
+            to: company_peg_to,
+        };
+        let developer_peg_time = PegTimeRange {
+            from: developer_peg_from,
+            to: developer_peg_to,
+        };
+        contract.company_peg_timeline = company_peg_time;
+        contract.developer_peg_timeline = developer_peg_time;
+        contract.company_peg_amount = company_peg_amount;
+        contract.developer_peg_amount = developer_peg_amount;
+        contract.start = start;
+        contract.end = end;
+        Ok(())
+    }
+
+    pub fn company_peg_to(ctx: Context<PegContract>) -> anchor_lang::Result<()> {
+        let now = Clock::get().unwrap().unix_timestamp as u64;
+        let contract = &mut ctx.accounts.contract;
+        if now < contract.start || now > contract.end {
+            return Err(error!(Errors::ContractNotAvailable));
+        }
+        let seeds: &[&[&[u8]]] = &[&[
+            "treasurer".as_ref(),
+            &contract.company.to_bytes(),
+            &[*ctx.bumps.get("treasurer").unwrap()],
+        ]];
+        let transfer_ctx = CpiContext::new_with_signer(
+            ctx.accounts.token_program.to_account_info(),
+            token::Transfer {
+                from: ctx.accounts.owner_token_account.to_account_info(),
+                to: ctx.accounts.contract_token_account.to_account_info(),
+                authority: ctx.accounts.authority.to_account_info(),
+            },
+            seeds,
+        );
+        token::transfer(transfer_ctx, contract.company_peg_amount)?;
+
+        Ok(())
+    }
+
+    pub fn developer_peg_to(ctx: Context<PegContract>) -> anchor_lang::Result<()> {
+        let now = Clock::get().unwrap().unix_timestamp as u64;
+        let contract = &mut ctx.accounts.contract;
+        if now < contract.start || now > contract.end {
+            return Err(error!(Errors::ContractNotAvailable));
+        }
+        let seeds: &[&[&[u8]]] = &[&[
+            "treasurer".as_ref(),
+            &contract.developer.to_bytes(),
+            &[*ctx.bumps.get("treasurer").unwrap()],
+        ]];
+        let transfer_ctx = CpiContext::new_with_signer(
+            ctx.accounts.token_program.to_account_info(),
+            token::Transfer {
+                from: ctx.accounts.owner_token_account.to_account_info(),
+                to: ctx.accounts.contract_token_account.to_account_info(),
+                authority: ctx.accounts.authority.to_account_info(),
+            },
+            seeds,
+        );
+        token::transfer(transfer_ctx, contract.developer_peg_amount)?;
+
+        Ok(())
+    }
+
+    pub fn company_depeg_from(ctx: Context<PegContract>) -> anchor_lang::Result<()> {
+        let now = Clock::get().unwrap().unix_timestamp as u64;
+        let contract = &mut ctx.accounts.contract;
+        if now >= contract.company_peg_timeline.from || now <= contract.company_peg_timeline.to {
+            return Err(error!(Errors::CannotDepeg));
+        }
+
+        let seeds: &[&[&[u8]]] = &[&[
+            "treasurer".as_ref(),
+            &contract.developer.to_bytes(),
+            &contract.company.to_bytes(),
+            &[*ctx.bumps.get("treasurer").unwrap()],
+        ]];
+        let transfer_ctx = CpiContext::new_with_signer(
+            ctx.accounts.token_program.to_account_info(),
+            token::Transfer {
+                from: ctx.accounts.contract_token_account.to_account_info(),
+                to: ctx.accounts.owner_token_account.to_account_info(),
+                authority: ctx.accounts.authority.to_account_info(),
+            },
+            seeds,
+        );
+        token::transfer(transfer_ctx, contract.company_peg_amount)?;
+
+        Ok(())
+    }
+
+    pub fn developer_depeg_from(ctx: Context<PegContract>) -> anchor_lang::Result<()> {
+        let now = Clock::get().unwrap().unix_timestamp as u64;
+        let contract = &mut ctx.accounts.contract;
+        if now >= contract.developer_peg_timeline.from || now <= contract.developer_peg_timeline.to {
+            return Err(error!(Errors::CannotDepeg));
+        }
+
+        let seeds: &[&[&[u8]]] = &[&[
+            "treasurer".as_ref(),
+            &contract.developer.to_bytes(),
+            &contract.company.to_bytes(),
+            &[*ctx.bumps.get("treasurer").unwrap()],
+        ]];
+        let transfer_ctx = CpiContext::new_with_signer(
+            ctx.accounts.token_program.to_account_info(),
+            token::Transfer {
+                from: ctx.accounts.contract_token_account.to_account_info(),
+                to: ctx.accounts.owner_token_account.to_account_info(),
+                authority: ctx.accounts.authority.to_account_info(),
+            },
+            seeds,
+        );
+        token::transfer(transfer_ctx, contract.developer_peg_amount)?;
+
         Ok(())
     }
 }
@@ -221,4 +369,12 @@ pub enum Errors {
     CannotCreateInterview,
     #[msg("Interview result cannot be updated, missing data")]
     CannotUpdateInterviewResult,
+    #[msg("Contract cannot be created, missing data")]
+    CannotCreateContract,
+    #[msg("Peg time range is not valid")]
+    InvalidPegTime,
+    #[msg("Contract is not available at the time, cannot peg to")]
+    ContractNotAvailable,
+    #[msg("Cannot depeg by owner, still in pegging time range")]
+    CannotDepeg,
 }
