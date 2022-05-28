@@ -63,9 +63,9 @@ pub struct CreateJD<'info> {
         space = JdAccount::MAX_SIZE + 8
     )]
     pub jd: Account<'info, JdAccount>,
+
     #[account(mut)]
     pub authority: Signer<'info>,
-
     /// CHECK: Simple test account
     pub system_program: UncheckedAccount<'info>,
 

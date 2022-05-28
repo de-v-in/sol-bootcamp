@@ -193,6 +193,97 @@ export type Solancer = {
           type: 'publicKey';
         }
       ];
+    },
+    {
+      name: 'createInterview';
+      accounts: [
+        {
+          name: 'interview';
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: 'authority';
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: 'systemProgram';
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: 'tokenProgram';
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: 'clock';
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: 'jdTitle';
+          type: 'string';
+        },
+        {
+          name: 'testUrl';
+          type: 'string';
+        }
+      ];
+    },
+    {
+      name: 'addInterviewSubmission';
+      accounts: [
+        {
+          name: 'interview';
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: 'clock';
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: 'developer';
+          type: 'publicKey';
+        },
+        {
+          name: 'testSubmitUrl';
+          type: 'string';
+        }
+      ];
+    },
+    {
+      name: 'updateInterviewResult';
+      accounts: [
+        {
+          name: 'interview';
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: 'authority';
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: 'clock';
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: 'result';
+          type: 'string';
+        }
+      ];
     }
   ];
   accounts: [
@@ -297,6 +388,38 @@ export type Solancer = {
           }
         ];
       };
+    },
+    {
+      name: 'interviewAccount';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'authority';
+            type: 'publicKey';
+          },
+          {
+            name: 'developer';
+            type: 'publicKey';
+          },
+          {
+            name: 'jdTitle';
+            type: 'string';
+          },
+          {
+            name: 'testUrl';
+            type: 'string';
+          },
+          {
+            name: 'testSubmitUrl';
+            type: 'string';
+          },
+          {
+            name: 'result';
+            type: 'string';
+          }
+        ];
+      };
     }
   ];
   types: [
@@ -352,6 +475,16 @@ export type Solancer = {
       code: 6006;
       name: 'CannotAddApprovement';
       msg: 'Approvement cannot be added, missing data';
+    },
+    {
+      code: 6007;
+      name: 'CannotCreateInterview';
+      msg: 'Interview cannot be added, missing data';
+    },
+    {
+      code: 6008;
+      name: 'CannotUpdateInterviewResult';
+      msg: 'Interview result cannot be updated, missing data';
     }
   ];
 };
@@ -552,6 +685,97 @@ export const IDL: Solancer = {
         },
       ],
     },
+    {
+      name: 'createInterview',
+      accounts: [
+        {
+          name: 'interview',
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: 'authority',
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: 'systemProgram',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'tokenProgram',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'clock',
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: 'jdTitle',
+          type: 'string',
+        },
+        {
+          name: 'testUrl',
+          type: 'string',
+        },
+      ],
+    },
+    {
+      name: 'addInterviewSubmission',
+      accounts: [
+        {
+          name: 'interview',
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: 'clock',
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: 'developer',
+          type: 'publicKey',
+        },
+        {
+          name: 'testSubmitUrl',
+          type: 'string',
+        },
+      ],
+    },
+    {
+      name: 'updateInterviewResult',
+      accounts: [
+        {
+          name: 'interview',
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: 'authority',
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: 'clock',
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: 'result',
+          type: 'string',
+        },
+      ],
+    },
   ],
   accounts: [
     {
@@ -656,6 +880,38 @@ export const IDL: Solancer = {
         ],
       },
     },
+    {
+      name: 'interviewAccount',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'authority',
+            type: 'publicKey',
+          },
+          {
+            name: 'developer',
+            type: 'publicKey',
+          },
+          {
+            name: 'jdTitle',
+            type: 'string',
+          },
+          {
+            name: 'testUrl',
+            type: 'string',
+          },
+          {
+            name: 'testSubmitUrl',
+            type: 'string',
+          },
+          {
+            name: 'result',
+            type: 'string',
+          },
+        ],
+      },
+    },
   ],
   types: [
     {
@@ -710,6 +966,16 @@ export const IDL: Solancer = {
       code: 6006,
       name: 'CannotAddApprovement',
       msg: 'Approvement cannot be added, missing data',
+    },
+    {
+      code: 6007,
+      name: 'CannotCreateInterview',
+      msg: 'Interview cannot be added, missing data',
+    },
+    {
+      code: 6008,
+      name: 'CannotUpdateInterviewResult',
+      msg: 'Interview result cannot be updated, missing data',
     },
   ],
 };

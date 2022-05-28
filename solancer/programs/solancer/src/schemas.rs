@@ -38,8 +38,8 @@ pub struct JdAccount {
     pub title: String,
     pub jd_content_url: String,
     pub max_slot: u64,
-    pub approved_list: Vec<Pubkey>,
-    pub pending_list: Vec<PendingSubmission>,
+    pub approved_list: Vec<Pubkey>,           // approved developers
+    pub pending_list: Vec<PendingSubmission>, // pending developers
     pub is_available: bool,
 }
 
@@ -54,6 +54,17 @@ pub struct PendingSubmission {
     pub developer: Pubkey,
 }
 
+/*
+    1. Created by company after approving developer CV:
+     - authority
+     - jd_tile
+     - test_url
+    2. Developer update:
+     - test_submit_url
+     - developer
+    3. Company final update:
+     - result
+*/
 #[account]
 pub struct InterviewAccount {
     pub authority: Pubkey,
