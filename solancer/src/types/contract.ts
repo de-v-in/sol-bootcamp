@@ -11,9 +11,24 @@ export type Solancer = {
           isSigner: false;
         },
         {
+          name: 'tokenProgram';
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: 'treasurer';
+          isMut: false;
+          isSigner: false;
+        },
+        {
           name: 'authority';
           isMut: true;
           isSigner: true;
+        },
+        {
+          name: 'tokenAccount';
+          isMut: true;
+          isSigner: false;
         },
         {
           name: 'systemProgram';
@@ -21,12 +36,12 @@ export type Solancer = {
           isSigner: false;
         },
         {
-          name: 'tokenProgram';
+          name: 'associatedTokenProgram';
           isMut: false;
           isSigner: false;
         },
         {
-          name: 'associatedTokenProgram';
+          name: 'mint';
           isMut: false;
           isSigner: false;
         },
@@ -74,17 +89,32 @@ export type Solancer = {
           isSigner: true;
         },
         {
-          name: 'systemProgram';
-          isMut: false;
-          isSigner: false;
-        },
-        {
           name: 'tokenProgram';
           isMut: false;
           isSigner: false;
         },
         {
+          name: 'treasurer';
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: 'tokenAccount';
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: 'systemProgram';
+          isMut: false;
+          isSigner: false;
+        },
+        {
           name: 'associatedTokenProgram';
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: 'mint';
           isMut: false;
           isSigner: false;
         },
@@ -512,9 +542,24 @@ export const IDL: Solancer = {
           isSigner: false,
         },
         {
+          name: 'tokenProgram',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'treasurer',
+          isMut: false,
+          isSigner: false,
+        },
+        {
           name: 'authority',
           isMut: true,
           isSigner: true,
+        },
+        {
+          name: 'tokenAccount',
+          isMut: true,
+          isSigner: false,
         },
         {
           name: 'systemProgram',
@@ -522,12 +567,12 @@ export const IDL: Solancer = {
           isSigner: false,
         },
         {
-          name: 'tokenProgram',
+          name: 'associatedTokenProgram',
           isMut: false,
           isSigner: false,
         },
         {
-          name: 'associatedTokenProgram',
+          name: 'mint',
           isMut: false,
           isSigner: false,
         },
@@ -575,17 +620,32 @@ export const IDL: Solancer = {
           isSigner: true,
         },
         {
-          name: 'systemProgram',
-          isMut: false,
-          isSigner: false,
-        },
-        {
           name: 'tokenProgram',
           isMut: false,
           isSigner: false,
         },
         {
+          name: 'treasurer',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'tokenAccount',
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: 'systemProgram',
+          isMut: false,
+          isSigner: false,
+        },
+        {
           name: 'associatedTokenProgram',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'mint',
           isMut: false,
           isSigner: false,
         },

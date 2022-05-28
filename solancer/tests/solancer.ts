@@ -12,7 +12,7 @@ const program = anchor.workspace.Solancer as Program<Solancer>;
 const programId = program.programId;
 const companyPubkey = provider.wallet.publicKey;
 anchor.setProvider(provider);
-
+const DEV_SOL_MINT = 'skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq';
 describe('Solancer testsuite', async () => {
   let createPdaTests = [
     {
@@ -28,7 +28,15 @@ describe('Solancer testsuite', async () => {
       method: 'createCompany',
     },
   ];
-
+  const [treasurer] = await anchor.web3.PublicKey.findProgramAddress(
+    [Buffer.from('treasurer'), companyPubkey.toBuffer()],
+    program.programId
+  );
+  const mintPublicKey = new anchor.web3.PublicKey(DEV_SOL_MINT);
+  const tokenAccount = await anchor.utils.token.associatedAddress({
+    mint: mintPublicKey,
+    owner: treasurer,
+  });
   createPdaTests.forEach((tc: any) => {
     const { name, seed, args } = tc;
     it(name, async () => {
@@ -48,6 +56,9 @@ describe('Solancer testsuite', async () => {
             systemProgram: SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
             associatedTokenProgram: anchor.utils.token.ASSOCIATED_PROGRAM_ID,
+            treasurer,
+            mint: DEV_SOL_MINT,
+            tokenAccount,
           })
           .rpc();
       } catch (error) {

@@ -17,18 +17,32 @@ pub struct CreateDeveloper<'info> {
     )]
     pub developer: Account<'info, DeveloperAccount>,
 
+    // Token program
+    #[account(constraint = token_program.key == &token::ID)]
+    pub token_program: Program<'info, Token>,
+
+    #[account(seeds = [b"treasurer".as_ref(), authority.key().as_ref()], bump)]
+    /// CHECK: Just a pure account
+    pub treasurer: AccountInfo<'info>,
+
     // Authority (this is signer who paid transaction fee)
     #[account(mut)]
     pub authority: Signer<'info>,
+
+    #[account(
+        init,
+        payer = authority,
+        associated_token::mint = mint,
+        associated_token::authority = treasurer
+        )]
+    pub token_account: Account<'info, token::TokenAccount>,
 
     /// System program
     /// CHECK: Simple test account
     pub system_program: Program<'info, System>,
 
-    // Token program
-    #[account(constraint = token_program.key == &token::ID)]
-    pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
+    pub mint: Box<Account<'info, token::Mint>>,
     // Clock to save time
     pub clock: Sysvar<'info, Clock>,
     pub rent: Sysvar<'info, Rent>,
@@ -49,12 +63,26 @@ pub struct CreateCompany<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
 
+    #[account(constraint = token_program.key == &token::ID)]
+    pub token_program: Program<'info, Token>,
+
+    #[account(seeds = [b"treasurer".as_ref(), authority.key().as_ref()], bump)]
+    /// CHECK: Just a pure account
+    pub treasurer: AccountInfo<'info>,
+
+    #[account(
+        init,
+        payer = authority,
+        associated_token::mint = mint,
+        associated_token::authority = treasurer
+        )]
+    pub token_account: Account<'info, token::TokenAccount>,
+
     /// CHECK: Simple test account
     pub system_program: Program<'info, System>,
 
-    #[account(constraint = token_program.key == &token::ID)]
-    pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
+    pub mint: Box<Account<'info, token::Mint>>,
     pub clock: Sysvar<'info, Clock>,
     pub rent: Sysvar<'info, Rent>,
 }
