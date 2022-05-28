@@ -200,7 +200,7 @@ export type Solancer = {
         {
           name: 'interview';
           isMut: true;
-          isSigner: false;
+          isSigner: true;
         },
         {
           name: 'authority';
@@ -691,7 +691,7 @@ export const IDL: Solancer = {
         {
           name: 'interview',
           isMut: true,
-          isSigner: false,
+          isSigner: true,
         },
         {
           name: 'authority',

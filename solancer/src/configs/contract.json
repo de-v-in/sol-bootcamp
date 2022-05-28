@@ -200,7 +200,7 @@
         {
           "name": "interview",
           "isMut": true,
-          "isSigner": false
+          "isSigner": true
         },
         {
           "name": "authority",

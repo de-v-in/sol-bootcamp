@@ -162,6 +162,7 @@ pub mod solancer {
             return Err(error!(Errors::CannotCreateInterview));
         }
         let interview = &mut ctx.accounts.interview;
+        interview.authority = ctx.accounts.authority.key();
         interview.jd_title = jd_title;
         interview.test_url = test_url;
         Ok(())
@@ -180,7 +181,7 @@ pub mod solancer {
         if interview.developer == developer {
             return Err(error!(Errors::AlreadySubmitted));
         }
-
+        
         interview.developer = developer;
         interview.test_submit_url = test_submit_url;
         Ok(())
