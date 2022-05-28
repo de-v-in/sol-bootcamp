@@ -293,6 +293,60 @@ pub mod solancer {
 
         Ok(())
     }
+
+    pub fn company_depeg_from(ctx: Context<PegContract>) -> anchor_lang::Result<()> {
+        let now = Clock::get().unwrap().unix_timestamp as u64;
+        let contract = &mut ctx.accounts.contract;
+        if now >= contract.company_peg_timeline.from || now <= contract.company_peg_timeline.to {
+            return Err(error!(Errors::CannotDepeg));
+        }
+
+        let seeds: &[&[&[u8]]] = &[&[
+            "treasurer".as_ref(),
+            &contract.developer.to_bytes(),
+            &contract.company.to_bytes(),
+            &[*ctx.bumps.get("treasurer").unwrap()],
+        ]];
+        let transfer_ctx = CpiContext::new_with_signer(
+            ctx.accounts.token_program.to_account_info(),
+            token::Transfer {
+                from: ctx.accounts.contract_token_account.to_account_info(),
+                to: ctx.accounts.owner_token_account.to_account_info(),
+                authority: ctx.accounts.authority.to_account_info(),
+            },
+            seeds,
+        );
+        token::transfer(transfer_ctx, contract.company_peg_amount)?;
+
+        Ok(())
+    }
+
+    pub fn developer_depeg_from(ctx: Context<PegContract>) -> anchor_lang::Result<()> {
+        let now = Clock::get().unwrap().unix_timestamp as u64;
+        let contract = &mut ctx.accounts.contract;
+        if now >= contract.developer_peg_timeline.from || now <= contract.developer_peg_timeline.to {
+            return Err(error!(Errors::CannotDepeg));
+        }
+
+        let seeds: &[&[&[u8]]] = &[&[
+            "treasurer".as_ref(),
+            &contract.developer.to_bytes(),
+            &contract.company.to_bytes(),
+            &[*ctx.bumps.get("treasurer").unwrap()],
+        ]];
+        let transfer_ctx = CpiContext::new_with_signer(
+            ctx.accounts.token_program.to_account_info(),
+            token::Transfer {
+                from: ctx.accounts.contract_token_account.to_account_info(),
+                to: ctx.accounts.owner_token_account.to_account_info(),
+                authority: ctx.accounts.authority.to_account_info(),
+            },
+            seeds,
+        );
+        token::transfer(transfer_ctx, contract.developer_peg_amount)?;
+
+        Ok(())
+    }
 }
 
 #[error_code]
@@ -319,6 +373,8 @@ pub enum Errors {
     CannotCreateContract,
     #[msg("Peg time range is not valid")]
     InvalidPegTime,
-    #[msg("Contract is not available in time range")]
-    ContractNotAvailable
+    #[msg("Contract is not available at the time, cannot peg to")]
+    ContractNotAvailable,
+    #[msg("Cannot depeg by owner, still in pegging time range")]
+    CannotDepeg,
 }
