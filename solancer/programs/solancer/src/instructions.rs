@@ -42,18 +42,75 @@ pub struct CreateCompany<'info> {
     )]
     pub company: Account<'info, CompanyAccount>,
 
-    // Authority (this is signer who paid transaction fee)
     #[account(mut)]
     pub authority: Signer<'info>,
 
-    /// System program
     /// CHECK: Simple test account
     pub system_program: UncheckedAccount<'info>,
 
-    // Token program
     #[account(constraint = token_program.key == &token::ID)]
     pub token_program: Program<'info, Token>,
 
-    // Clock to save time
+    pub clock: Sysvar<'info, Clock>,
+}
+
+#[derive(Accounts)]
+pub struct CreateJD<'info> {
+    // Authenticate user account
+    #[account(
+        init,
+        payer = authority,
+        space = JdAccount::MAX_SIZE + 8
+    )]
+    pub jd: Account<'info, JdAccount>,
+    #[account(mut)]
+    pub authority: Signer<'info>,
+
+    /// CHECK: Simple test account
+    pub system_program: UncheckedAccount<'info>,
+
+    #[account(constraint = token_program.key == &token::ID)]
+    pub token_program: Program<'info, Token>,
+
+    pub clock: Sysvar<'info, Clock>,
+}
+
+#[derive(Accounts)]
+pub struct UpdateSubmission<'info> {
+    #[account(mut)]
+    pub jd: Account<'info, JdAccount>,
+
+    #[account(mut)]
+    pub authority: Signer<'info>,
+    pub clock: Sysvar<'info, Clock>,
+}
+#[derive(Accounts)]
+pub struct CreateInterview<'info> {
+    #[account(mut)]
+    pub interview: Account<'info, InterviewAccount>,
+
+    #[account(mut)]
+    pub authority: Signer<'info>,
+    /// CHECK: Simple test account
+    pub system_program: UncheckedAccount<'info>,
+
+    #[account(constraint = token_program.key == &token::ID)]
+    pub token_program: Program<'info, Token>,
+    pub clock: Sysvar<'info, Clock>,
+}
+
+#[derive(Accounts)]
+pub struct AddInterviewSubmission<'info> {
+    #[account(mut)]
+    pub interview: Account<'info, InterviewAccount>,
+    pub clock: Sysvar<'info, Clock>,
+}
+#[derive(Accounts)]
+pub struct UpdateInterviewResult<'info> {
+    #[account(mut, has_one = authority)]
+    pub interview: Account<'info, InterviewAccount>,
+
+    #[account(mut)]
+    pub authority: Signer<'info>,
     pub clock: Sysvar<'info, Clock>,
 }
