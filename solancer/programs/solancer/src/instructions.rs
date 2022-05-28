@@ -20,7 +20,7 @@ pub struct CreateDeveloper<'info> {
 
     /// System program
     /// CHECK: Simple test account
-    pub system_program: UncheckedAccount<'info>,
+    pub system_program: Program<'info, System>,
 
     // Token program
     #[account(constraint = token_program.key == &token::ID)]
@@ -46,7 +46,7 @@ pub struct CreateCompany<'info> {
     pub authority: Signer<'info>,
 
     /// CHECK: Simple test account
-    pub system_program: UncheckedAccount<'info>,
+    pub system_program: Program<'info, System>,
 
     #[account(constraint = token_program.key == &token::ID)]
     pub token_program: Program<'info, Token>,
@@ -67,7 +67,7 @@ pub struct CreateJD<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
     /// CHECK: Simple test account
-    pub system_program: UncheckedAccount<'info>,
+    pub system_program: Program<'info, System>,
 
     #[account(constraint = token_program.key == &token::ID)]
     pub token_program: Program<'info, Token>,
@@ -95,7 +95,7 @@ pub struct CreateInterview<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
     /// CHECK: Simple test account
-    pub system_program: UncheckedAccount<'info>,
+    pub system_program: Program<'info, System>,
 
     #[account(constraint = token_program.key == &token::ID)]
     pub token_program: Program<'info, Token>,
